@@ -1,12 +1,31 @@
 <?php
 
-use App\Http\Controllers\PostController;
+use App\Http\Controllers\TaskController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
-Route::get('/posts/create', [PostController::class, 'create'])->name('posts.create');
-Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
-Route::get('/posts/{id}', [PostController::class, 'show'])->name('posts.show');
-Route::delete('/posts/{id}', [PostController::class, 'delete'])->name('posts.delete');
-Route::get('/posts/edit/{id}', [PostController::class, 'edit'])->name('posts.edit');
-Route::post('/posts/edit/{id}', [PostController::class, 'update'])->name('posts.update');
+Route::get('/', [UserController::class, 'index']) -> name('index');
+
+Route::get('/register', function() {
+    return view('auth.register');
+}) -> name('register');
+Route::post('/register', [UserController::class, 'register']);
+
+Route::get('/login', function() {
+    return view('auth.login');
+}) -> name('login');
+Route::post('/login', [UserController::class, 'login']);
+
+Route::get('/logout', [UserController::class, 'logout'])
+    -> name('logout')
+    -> middleware('auth');
+
+Route::get('/tasks/{task?}', [TaskController::class, 'index'])
+    -> name('tasks.index')
+    -> middleware('auth');
+Route::post('/tasks/{task?}', [TaskController::class, 'createOrUpdate'])
+    -> middleware('auth');
+
+Route::get('/tasks/delete/{task}', [TaskController::class, 'delete'])
+    -> name('tasks.delete')
+    -> middleware('auth');

@@ -2,20 +2,22 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 
+/**
+ * Класс User представляет модель пользователя в приложении.
+ *
+ * Этот класс наследуется от Authenticatable и использует трейт HasFactory и Notifiable.
+ * Он определяет свойства, которые можно массово заполнять, скрытые свойства, а также
+ * связи с другими моделями.
+ */
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
-
     /**
-     * The attributes that are mass assignable.
+     * Массив атрибутов, которые можно массово заполнять.
      *
-     * @var list<string>
+     * @var string[]
      */
     protected $fillable = [
         'name',
@@ -24,9 +26,9 @@ class User extends Authenticatable
     ];
 
     /**
-     * The attributes that should be hidden for serialization.
+     * Массив атрибутов, которые должны быть скрыты для массивов.
      *
-     * @var list<string>
+     * @var string[]
      */
     protected $hidden = [
         'password',
@@ -34,9 +36,9 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get the attributes that should be cast.
+     * Определяет преобразования типов для атрибутов модели.
      *
-     * @return array<string, string>
+     * @return array<string, string> Ассоциативный массив, где ключ — имя атрибута, а значение — тип преобразования.
      */
     protected function casts(): array
     {
@@ -44,5 +46,15 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Определяет связь "один ко многим" с моделью Task.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany Экземпляр связи HasMany.
+     */
+    public function tasks(): HasMany
+    {
+        return $this -> hasMany(Task::class);
     }
 }
